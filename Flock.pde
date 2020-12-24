@@ -8,14 +8,18 @@ class Flock
     boids = new ArrayList<Boid>();    // Initialize list
   }
   
+  
+  
   // Passes entire list of boids to each boid
-  void run()
+  void run(float fftVal)
   {
     for (Boid b : boids)
     {
-      b.run(boids);
+      b.run(boids, fftVal);
     }
   }
+  
+  
   
   // Add boid
   void addBoid(Boid b)
