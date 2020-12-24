@@ -13,7 +13,7 @@ class Particle
     acceleration = new PVector(0.0f, 0.05f, 0.0f);
     velocity = new PVector( random(-0.2, 0.2), 0.5f, random(-0.2, 0.2) );
     position = l.copy();
-    lifespan = 38.0f;
+    lifespan = 50.0f;
   }
   
   // Runs update and display functions
@@ -37,7 +37,7 @@ class Particle
     //stroke(255, lifespan);
     noStroke();
     fill(255, lifespan);
-    ellipse(position.x, position.y, 2.0f, 2.0f);    
+    ellipse(position.x, position.y, 4.0f, 4.0f);    
   }
   
   boolean isDead()

@@ -10,8 +10,7 @@
 // To Do ideas:
 //   - Have flocks of same band do something when they're near each other
 //     such as high alpha or lerp colors or add shape or something
-//   - Have FFT band amplitude modify boids direction, flocking rules, or color change
-//   - Figure out how to rotate Boid class in 3D (Currently only rotates in 2D) 
+//   - Have FFT band amplitude modify boids direction, flocking rules, or color change 
 
 import processing.sound.*;
 
@@ -19,7 +18,7 @@ import processing.sound.*;
 // Audio
 AudioIn audioIn;
 FFT fft;
-int fftResolution = 4;                    // the power you're raising 2 to:  2^fftResolution
+int fftResolution = 3;                    // the power you're raising 2 to:  2^fftResolution
 int bands = (int)pow(2, fftResolution);   // number of FFT bands using fftResolution
 float smoothingFactor = 0.2f;             // reaction to FFT band amplitude speed. (lower = faster)
 float[] spectrum = new float[bands];      // array of FFT band values for smoothing

@@ -5,6 +5,7 @@ class Boid
   PVector position;
   PVector velocity;
   PVector acceleration;
+  PVector dir;
   
   // Boid limits
   float r;           // traingle measurment & distance beyond edge of screen
@@ -12,9 +13,9 @@ class Boid
   float maxSpeed;    // Speed limit
   
   // Boid multipliers
-  float sepMult = 7.3f;    // Original value 1.5f
-  float aliMult = 7.2f;    // Original value 1.0f
-  float cohMult = 7.1f;    // Original value 1.0f
+  float sepMult = 2.5f;    // Original value 1.5f
+  float aliMult = 1.0f;    // Original value 1.0f
+  float cohMult = 1.2f;    // Original value 1.0f
   
   // Boid color
   color c1;
@@ -22,7 +23,7 @@ class Boid
   
   // Particle system
   ParticleSystem ps;  // particles shoot out back of boid like jet exhaust
-  int jetFrames = 7;  // particle out back of boid every jetFrames number of frames
+  int jetFrames = 10;  // particle out back of boid every jetFrames number of frames
   
   // Constructor
   Boid(float x, float y, float z, color initColor)
@@ -34,7 +35,7 @@ class Boid
     
     // Limit initialization
     r = 2.0f;
-    maxSpeed = 5.0f;    // original value = 2.0f
+    maxSpeed = 20.0f;    // original value = 2.0f
     maxForce = 0.008f;  // original value = 0.03f 
     
     // Color initialization
@@ -86,6 +87,7 @@ class Boid
   {
     velocity.add(acceleration);  // Update velocity
     velocity.limit( maxSpeed );  // limit speed
+    dir = velocity.copy();
     position.add(velocity);      // new position based on velocity
     acceleration.mult(0.0f);     // Reset accel to 0
   }
@@ -118,9 +120,7 @@ class Boid
     if (position.y > height + r)
       position.y = -r;
     if (position.z > height + r)
-      position.z = -r;
-    
-      
+      position.z = -r; 
   }
   
   
@@ -128,22 +128,61 @@ class Boid
   // Currently only rotates in XY directions. Needs to also rotate 
   // to face Z direction
   void render()
-  {
-    float theta = velocity.heading() + radians(90);
+  {    
+    // Original 2D theta
+    // float theta = velocity.heading() + radians(90);
+    
+    // 3D Rotations: Just the Z and Y works for some reason. 
+    // Math people can explain it to me later.
+    float thetaZ = atan2(dir.y, dir.x) + radians(90);
+    float thetaY = atan2(dir.x, dir.z) + radians(90);
+    // float thetaX = atan2(dir.z, dir.y) + radians(90); 
+    // Adding third dimension makes 3D rotation wrong for some reason
+    // So don't use it but i left it there just because.
     
     fill(c1);      // Boid color
-    //stroke(c2);    // Boid outline color
-    noStroke();    // No outline runs smoother.
+    stroke(c2);    // Boid outline color
+    //noStroke();    // No outline runs smoother.
     
     // Individual boid position translation matrix
     pushMatrix();
       translate(position.x, position.y, position.z);
-      ps.updateOrigin(new PVector(0.0f, r * 2.0f, 0.0f));
-      rotate(theta);                                          // **HOW TO DO 3D ROTATION?**
+      ps.updateOrigin(new PVector(0.0f, r * 5.0f, 0.0f));
+      
+      rotateZ(thetaZ);
+      rotateY(thetaY);
+      
+      /* ORIGINAL 2D Rotate
+      rotate(theta);
+      */
+      
+      
       beginShape(TRIANGLES);
+      
+      /*  ORIGINAL 2D TRIANGLE
       vertex(0, -r * 2.0f);
       vertex(-r, r * 2.0f);
       vertex(r, r * 2.0f);
+      */
+      
+      // 3D Dart Shape
+      vertex(0.0f, -r * 5.0f, 0.0f);
+      vertex(0.0f, r * 5.0f, r * 5.0f);
+      vertex(r, r* 5.0f, 0.0f);
+      
+      vertex(0.0f, -r * 5.0f, 0.0f);
+      vertex(-r, r * 5.0f, 0.0f);
+      vertex(0.0f, r * 5.0f, r * 5.0f);
+      
+      vertex(0.0f, -r * 5.0f, 0.0f);
+      vertex(0.0f, r * 5.0f, -r * 5.0f);
+      vertex(-r, r * 5.0f, 0.0f);
+      
+      vertex(0.0f, -r * 5.0f, 0.0f);
+      vertex(0.0f, r * 5.0f, -r * 5.0f);
+      vertex(r, r * 5.0f, 0.0f);
+
+      
       endShape();
       
       // Adds particle out the rear of boid every jetFrames number of frames
